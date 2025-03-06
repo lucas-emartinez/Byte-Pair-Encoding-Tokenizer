@@ -9,17 +9,17 @@ class SimpleTokenizerV2:
     '''
     
     def __init__(self, vocab: dict[str, int]):
-        self.str_to_int = vocab
-        self.int_to_str = {i: s for s, i in vocab.items()}
+        self.stoi = vocab
+        self.itos = {i: s for s, i in vocab.items()}
         
     def encode(self, text):
         preprocessed = re.split(r'([,.?_!"()\']|--|\s)', text)
         preprocessed = [item for item in preprocessed if item.strip()]
-        preprocessed = [item if item in self.str_to_int else "<|unk|>" for item in preprocessed]
-        ids = [self.str_to_int[s] for s in preprocessed]
+        preprocessed = [item if item in self.stoi else "<|unk|>" for item in preprocessed]
+        ids = [self.stoi[s] for s in preprocessed]
         return ids
     
     def decode(self, ids):
-        text = " ".join(self.int_to_str[id] for id in ids)
+        text = " ".join(self.itos[id] for id in ids)
         text = re.sub(r'\s+([,.?!"()\'])', r'\1', text)
         return text
