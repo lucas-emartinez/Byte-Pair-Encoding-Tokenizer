@@ -2,7 +2,7 @@ import re
 
 class SimpleTokenizerV2:
     '''
-    Tokenizer V1:
+    Tokenizer V2:
     - Simple tokenizer that uses a dictionary to map strings to integers and vice versa.
     - It preprocesses the text by splitting it into tokens and removing whitespace.
     - It encodes the text into a list of integers and decodes it back to text.

@@ -43,28 +43,16 @@ preprocessed = split_text(raw_text)
 preprocessed = [item for item in preprocessed if item.strip()]
 vocab = vocabulary(preprocessed)
 
-tokenizer = SimpleTokenizerV1(vocab)
-
-# Text sample contained in the training set
-text = """"It's the last he painted, you know,"
-Mrs. Gisburn said with pardonable pride."""
-
-ids = tokenizer.encode(text)
-print(ids)
-
-decoded = tokenizer.decode(ids)
-print(decoded)
+tokenizer2 = SimpleTokenizerV2(vocab)
 
 text1 = "Hello, do you like tea?"
 text2 = "In the sunlit terraces of the palace."
-texts = " <|endoftext|> ".join((text1, text2))
-print(texts)
+text = " <|endoftext|> ".join((text1, text2))
+print(text)
 
-tokenizer2 = SimpleTokenizerV2(vocab)
-ids2 = tokenizer2.encode(texts)
-print(ids2)
+ids = tokenizer2.encode(text)
+print(ids)
 
-decoded2 = tokenizer2.decode(ids2)
-print(decoded2)
-
+decoded = tokenizer2.decode(ids)
+print(decoded)
 

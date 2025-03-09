@@ -9,7 +9,7 @@ text = (
 )
 
 integers = tokenizer.encode(text, allowed_special={"<|endoftext|>"})
-decoded = tokenizer.decode(integers)
+strings = tokenizer.decode(integers)
 
 print(integers)
-print(decoded)
+print(strings)

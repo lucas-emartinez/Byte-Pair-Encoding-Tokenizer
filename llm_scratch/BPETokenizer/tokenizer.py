@@ -71,3 +71,84 @@ decoded = tokenizer.decode(encoded)  # Decodificar de vuelta
 
 print("Encoded:", encoded)
 print("Decoded:", decoded)
+
+import regex as re
+
+gpt2pat = re.compile(r"""'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+""")
+print(re.findall(gpt2pat, "What's the weather in Tokyo?"))
+
+
+import tiktoken
+# GPT-2 (does not merge spaces)
+enc = tiktoken.get_encoding("gpt2")
+print(enc.encode("Hello world"))
+
+enc = tiktoken.get_encoding("cl100k_base")
+print(enc.encode("Hello world"))
+
+enc = tiktoken.get_encoding("p50k_base")
+print(enc.encode("Hello world"))
+
+
+import sentencepiece as spm
+
+with open("toy.txt", "w", encoding="utf-8") as f:
+  f.write("SentencePiece is an unsupervised text tokenizer and detokenizer mainly for Neural Network-based text generation systems where the vocabulary size is predetermined prior to the neural model training. SentencePiece implements subword units (e.g., byte-pair-encoding (BPE) [Sennrich et al.]) and unigram language model [Kudo.]) with the extension of direct training from raw sentences. SentencePiece allows us to make a purely end-to-end system that does not depend on language-specific pre/postprocessing.")
+
+options = dict(
+    input="toy.txt",
+    input_format="text",
+    # output spec
+    model_prefix="tok400" # ew, turn off normalization
+)
+
+# train a sentencepiece model on it
+# the settings here are (best effort) those used for training Llama 2
+import os
+
+options = dict(
+  # input spec
+  input="toy.txt",
+  input_format="text",
+  # output spec
+  model_prefix="tok400", # output filename prefix
+  # algorithm spec
+  # BPE alg
+  model_type="bpe",
+  vocab_size=400,
+  # normalization
+  normalization_rule_name="identity", # ew, turn off normalization
+  remove_extra_whitespaces=False,
+  input_sentence_size=200000000, # max number of training sentences
+  max_sentence_length=4192, # max number of bytes per sentence
+  seed_sentencepiece_size=1000000,
+  shuffle_input_sentence=True,
+  # rare word treatment
+  character_coverage=0.99995,
+  byte_fallback=True,
+  # merge rules
+  split_digits=True,
+  split_by_unicode_script=True,
+  split_by_whitespace=True,
+  split_by_number=True,
+  max_sentencepiece_length=16,
+  add_dummy_prefix=True,
+  allow_whitespace_only_pieces=True,
+  # special tokens
+  unk_id=0, # the UNK token MUST exist
+  bos_id=1, # the others are optional, set to -1 to turn off
+  eos_id=2,
+  pad_id=-1,
+  # systems
+  num_threads=os.cpu_count(), # use ~all system resources
+)
+
+spm.SentencePieceTrainer.train(**options)
+
+sp = spm.SentecePieceProcessor()
+sp.load('tok400.model')
+vocab = [[sp.id_to_piece(idx), idx] for idx in range(sp.get_piece_size())]
+
+
+
+
